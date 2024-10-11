@@ -8,11 +8,11 @@ function App() {
   const handleNumber = (event) => {
     const number = event.target.textContent;
 
-    if (history.length > 0) {
+    if (history.length > 0 && display !== '0') {
         const lastChar = display.trim().slice(-1);
 
-        if (lastChar === '+' || lastChar === '-' || lastChar === '*' || lastChar === '/') {
-            setDisplay(display + number);
+        if (display.includes('+') || display.includes('-') || display.includes('*') || display.includes('/')) {
+          setDisplay(display + number);
         } else {
             setHistory([]);
             setDisplay(number);
@@ -97,12 +97,14 @@ function App() {
   return (
     <div className="App">
       <div className="calculator">
-        <div className="history">
-          {history.map((entry, index) => (
-            <div key={index}>{entry}</div>
-          ))}
+        <div id="results">
+          <div id="history">
+            {history.map((entry, index) => (
+              <div key={index}>{entry}</div>
+            ))}
+          </div>
+          <div id="display" className="row">{display}</div>
         </div>
-        <div id="display" className="row">{display}</div>
         <div id="clear" className="row" onClick={handleClear}>
           AC
         </div>
