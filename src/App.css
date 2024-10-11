@@ -1,0 +1,55 @@
+*, ::before, ::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App {
+  background-color: rgb(110, 118, 110);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.history {
+  background-color: rgb(47, 47, 47);
+  grid-column: 1 / 5;
+  color: white;
+}
+
+.calculator {
+  background-color: black;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 8rem 0;
+}
+
+.calculator > * {
+  border: 0.06rem solid black;
+  background-color: rgb(47, 47, 47);
+  color: white;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+#display {
+  grid-column: span 4;
+  justify-content: right;
+}
+
+#clear {
+  grid-column: 1 / 3;
+}
+
+#zero {
+  grid-column: span 2;
+}
+
+#equals {
+  grid-row: span 2;
+}
