@@ -61,3 +61,13 @@
 #equals {
   grid-row: span 2;
 }
+
+.button.active {
+  background-color: white;
+  color: black;
+}
+
+.row.active {
+  background-color: white;
+  color: black;
+}
