@@ -43,7 +43,6 @@ const handleOperator = (event) => {
   const operator = event.target.textContent;
   setActiveButton(event.target.id);
 
-  // Clear history when an operator is pressed
   setHistory([]);
 
   if (display.endsWith('=')) {
