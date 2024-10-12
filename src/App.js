@@ -6,88 +6,103 @@ function App() {
   const [history, setHistory] = useState([]);
   const [activeButton, setActiveButton] = useState(null);
 
-  const handleNumber = (event) => {
-    const number = event.target.textContent;
-    setActiveButton(event.target.id);
-
-    if (history.length > 0 && display !== '0') {
-        const lastChar = display.trim().slice(-1);
-
-        if (display.includes('+') || display.includes('-') || display.includes('*') || display.includes('/')) {
-          setDisplay(display + number);
-        } else {
-            setHistory([]);
-            setDisplay(number);
-        }
-    } else if (display === '0') {
-        setDisplay(number);
-    } else {
-        setDisplay(display + number);
+  const formatNumber = (num) => {
+    if (Math.abs(num) >= 1e15 || Math.abs(num) < 1e-6) {
+      return num.toExponential(3);
     }
-
-    setTimeout(() => setActiveButton(null), 200);
-};
-
-  const handleOperator = (event) => {
-    const operator = event.target.textContent;
-    setActiveButton(event.target.id);
-  
-    if (display.endsWith('=')) {
-      const result = display.slice(0, -1).trim();
-      setDisplay(result + ' ' + operator + ' ');
-    } else if (!display.endsWith(' ') && !display.endsWith('+') && !display.endsWith('-') && !display.endsWith('*') && !display.endsWith('/')) {
-      setDisplay(display + ' ' + operator + ' ');
-    }
-
-    setTimeout(() => setActiveButton(null), 200);
+    return num.toString();
   };
 
-  const handleEqual = () => {
-    try {
-        const parts = display.trim().split(' ');
+  const truncate = (text) => {
+    return text.length > 23 ? text.slice(0, 23) : text;
+  };
 
-        if (parts.length < 3) {
-            setDisplay("Error");
-            return;
-        }
+  const handleNumber = (event) => {
+    const number = event.target.textContent;
+  setActiveButton(event.target.id);
 
-        const num1 = parseFloat(parts[parts.length - 3]);
-        const operator = parts[parts.length - 2];
-        const num2 = parseFloat(parts[parts.length - 1]);
+  if (history.length > 0 && display !== '0') {
+    const lastChar = display.trim().slice(-1);
 
-        let result;
+    if (display.includes('+') || display.includes('-') || display.includes('*') || display.includes('/')) {
+      setDisplay(truncate(display + number));
+    } else {
+      setHistory([]);
+      setDisplay(truncate(number));
+    }
+  } else if (display === '0') {
+    setDisplay(truncate(number));
+  } else {
+    setDisplay(truncate(display + number));
+  }
 
-        switch (operator) {
-            case '+':
-                result = num1 + num2;
-                break;
-            case '-':
-                result = num1 - num2;
-                break;
-            case '*':
-                result = num1 * num2;
-                break;
-            case '/':
-                if (num2 !== 0) {
-                    result = num1 / num2;
-                } else {
-                    setDisplay("Error");
-                    return;
-                }
-                break;
-            default:
-                setDisplay("Error");
-                return;
-        }
+  setTimeout(() => setActiveButton(null), 200);
+};
 
-        setHistory([`${num1} ${operator} ${num2} = ${result}`]);
-        setDisplay(result.toString());
-    } catch (error) {
-        setDisplay("Error");
+const handleOperator = (event) => {
+  const operator = event.target.textContent;
+  setActiveButton(event.target.id);
+
+  // Clear history when an operator is pressed
+  setHistory([]);
+
+  if (display.endsWith('=')) {
+    const result = display.slice(0, -1).trim();
+    setDisplay(truncate(result + ' ' + operator + ' '));
+  } else if (!display.endsWith(' ') && !display.endsWith('+') && !display.endsWith('-') && !display.endsWith('*') && !display.endsWith('/')) {
+    setDisplay(truncate(display + ' ' + operator + ' '));
+  }
+
+  setTimeout(() => setActiveButton(null), 200);
+};
+
+const handleEqual = () => {
+  try {
+    const parts = display.trim().split(' ');
+
+    if (parts.length < 3) {
+      setDisplay("Error");
+      return;
     }
 
-    setActiveButton('equals');
-    setTimeout(() => setActiveButton(null), 200);
+    const num1 = parseFloat(parts[parts.length - 3]);
+    const operator = parts[parts.length - 2];
+    const num2 = parseFloat(parts[parts.length - 1]);
+
+    let result;
+
+    switch (operator) {
+      case '+':
+        result = num1 + num2;
+        break;
+      case '-':
+        result = num1 - num2;
+        break;
+      case '*':
+        result = num1 * num2;
+        break;
+      case '/':
+        if (num2 !== 0) {
+          result = num1 / num2;
+        } else {
+          setDisplay("Error");
+          return;
+        }
+        break;
+      default:
+        setDisplay("Error");
+        return;
+    }
+
+    const historyEntry = `${num1} ${operator} ${num2} = ${result}`;
+    setHistory([truncate(historyEntry)]);
+    setDisplay(truncate(formatNumber(result)));
+  } catch (error) {
+    setDisplay("Error");
+  }
+
+  setActiveButton('equals');
+  setTimeout(() => setActiveButton(null), 200);
 };
 
   const handleDecimal = () => {
